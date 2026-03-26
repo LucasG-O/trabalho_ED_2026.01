@@ -72,7 +72,7 @@ bool ReservationSystem::reserve(ReservationRequest request){
                     // A regra de ordenação:
                     // Se o dia do novo for menor, OU (se for no mesmo dia E a hora for menor)...
                     if (dia_novo < dia_atual || (dia_novo == dia_atual && hora_nova < hora_atual)) {
-                        break; // ACHAMOS O LUGAR! O loop para aqui.
+                        break; // achamos o lugar, o loop para aqui.
                     }
             
                     // Continua andando
@@ -80,12 +80,12 @@ bool ReservationSystem::reserve(ReservationRequest request){
                     atual = atual->proximo;
                 }
 
-        // CENÁRIO 1: O vagão entra no comecinho do trem (na plataforma)
+        //caso 1: A reserva entra no comeco
         if (anterior == nullptr) {
             nova_reserva->proximo = this->room_schedules[i];
             this->room_schedules[i] = nova_reserva;
         } 
-        // CENÁRIO 2: O vagão entra no meio ou lá no final
+        // caso 2: A reserva entra no meio ou lá no final
         else {
             nova_reserva->proximo = atual;
             anterior->proximo = nova_reserva;
