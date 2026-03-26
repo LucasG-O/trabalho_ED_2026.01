@@ -42,6 +42,16 @@ bool ReservationSystem::isAvailable(int room_index, std::string weekday, int sta
     return true; 
 }
 
+// Função auxiliar para ajudar na ordenação
+int ReservationSystem::valorDoDia(std::string dia) {
+    if (dia == "segunda") return 1;
+    if (dia == "terca")   return 2;
+    if (dia == "quarta")  return 3;
+    if (dia == "quinta")  return 4;
+    if (dia == "sexta")   return 5;
+    return 6;
+}
+
 bool ReservationSystem::reserve(ReservationRequest request){
     for (int i = 0; i < room_count; i++){
         if (request.getStudentCount() <= room_capacities[i]){
@@ -49,11 +59,39 @@ bool ReservationSystem::reserve(ReservationRequest request){
                 // Criar uma possivel nova reserva
                 ReservaNode* nova_reserva = new ReservaNode{request, nullptr};
                 
-                // Inserir no início da lista de reservas da sala
-                nova_reserva->proximo = room_schedules[i];
-                room_schedules[i] = nova_reserva;
-                
-                return true; // Reserva feita com sucesso
+                int dia_novo = valorDoDia(request.getWeekday());
+                int hora_nova = request.getStartHour();
+
+                ReservaNode* atual = this->room_schedules[i];
+                ReservaNode* anterior = nullptr;
+
+                while (atual != nullptr) {
+                    int dia_atual = valorDoDia(atual->requisicao.getWeekday());
+                    int hora_atual = atual->requisicao.getStartHour();
+
+                    // A regra de ordenação:
+                    // Se o dia do novo for menor, OU (se for no mesmo dia E a hora for menor)...
+                    if (dia_novo < dia_atual || (dia_novo == dia_atual && hora_nova < hora_atual)) {
+                        break; // ACHAMOS O LUGAR! O loop para aqui.
+                    }
+            
+                    // Continua andando
+                    anterior = atual;
+                    atual = atual->proximo;
+                }
+
+        // CENÁRIO 1: O vagão entra no comecinho do trem (na plataforma)
+        if (anterior == nullptr) {
+            nova_reserva->proximo = this->room_schedules[i];
+            this->room_schedules[i] = nova_reserva;
+        } 
+        // CENÁRIO 2: O vagão entra no meio ou lá no final
+        else {
+            nova_reserva->proximo = atual;
+            anterior->proximo = nova_reserva;
+        }
+
+        return true; // Reserva feita e ja ordenada
             }
         }
     }
@@ -62,12 +100,44 @@ bool ReservationSystem::reserve(ReservationRequest request){
 }
 
 bool ReservationSystem::cancel(std::string course_name){
+    for (int i = 0; i < room_count; i++){
+        ReservaNode* atual = room_schedules[i];
+        ReservaNode* anterior = nullptr;
 
+        while(atual != nullptr){
+            if (atual->requisicao.getCourseName() == course_name){
+                // Encontramos a reserva a ser cancelada
+                if (anterior == nullptr) {
+                    // A reserva a ser cancelada é a primeira da lista
+                    room_schedules[i] = atual->proximo;
+                } else {
+                    // A reserva a ser cancelada está no meio ou no final da lista
+                    anterior->proximo = atual->proximo;
+                }
+                delete atual; // Libera a memória da reserva cancelada
+                return true; // Cancelamento bem-sucedido
+            }
+            anterior = atual;
+            atual = atual->proximo; // Pula para a próxima reserva
+        }
+    return false; // Não foi possível encontrar a reserva para cancelar
+    }
 
 }
 
 void ReservationSystem::printSchedule(){
+    for (int i = 0; i < room_count; i++){
+        std::cout << "Sala " << i << std::endl;
+        int contador = 0;
+        ReservaNode* atual = this->room_schedules[0]; 
 
+    // percorremos de reserva em reserva
+        while (atual != nullptr) {
+            contador++;
+            atual = atual->proximo; // vai para a proxima reserva
+        }
+            
+    }
 
 }
 

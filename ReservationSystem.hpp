@@ -27,7 +27,8 @@ public:
     bool reserve(ReservationRequest request);
     bool cancel(std::string course_name);
     bool isAvailable(int room_index, std::string weekday, int start_hour, int end_hour);
-
+    int valorDoDia(std::string dia);
+    
     void printSchedule();
 
     // Outros métodos utilitários necessários
