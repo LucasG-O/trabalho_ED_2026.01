@@ -14,7 +14,7 @@ private:
     ReservationRequest reserva;
     ReservaNode* proximo;
 };
-    ReservaNode** reservas;
+    ReservaNode** reservas_salas; // Array de ponteiros para listas encadeadas de reservas por sala
     
     // Estruturas internas escolhidas pelos alunos
     // para armazenar e gerenciar as reservas, os horários, ...
