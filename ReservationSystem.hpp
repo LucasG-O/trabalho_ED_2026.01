@@ -8,20 +8,20 @@
 class ReservationSystem {
 
 private:
-    int room_count;
-    int* room_capacities;
+    int qtd_salas;
+    int* capacidade_salas;
     struct ReservaNode {
-    ReservationRequest requisicao;
+    ReservationRequest reserva;
     ReservaNode* proximo;
 };
-    ReservaNode** room_schedules;
+    ReservaNode** reservas;
     
     // Estruturas internas escolhidas pelos alunos
     // para armazenar e gerenciar as reservas, os horários, ...
 
 public:
 
-    ReservationSystem(int room_count, int* room_capacities);
+    ReservationSystem(int qtd_salas, int* capacidade_salas);
     ~ReservationSystem();
 
     bool reserve(ReservationRequest request);

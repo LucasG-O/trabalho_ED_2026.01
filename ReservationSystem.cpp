@@ -1,24 +1,24 @@
 #include "ReservationSystem.hpp"
 #include <iostream>
 
-ReservationSystem::ReservationSystem(int room_count, int* room_capacities) {
-    this->room_count = room_count;
-    this->room_capacities = new int[room_count];
-    for (int i = 0; i < room_count; i++) {
-        this->room_capacities[i] = room_capacities[i];
+ReservationSystem::ReservationSystem(int qtd_salas, int* capacidade_salas) {
+    this->qtd_salas = qtd_salas;
+    this->capacidade_salas = new int[qtd_salas];
+    for (int i = 0; i < qtd_salas; i++) {
+        this->capacidade_salas[i] = capacidade_salas[i];
     }
-    this->room_schedules = new ReservaNode*[room_count];
-    for (int i = 0; i < room_count; i++) {
-        this->room_schedules[i] = nullptr; 
+    this->reservas = new ReservaNode*[qtd_salas];
+    for (int i = 0; i < qtd_salas; i++) {
+        this->reservas[i] = nullptr; 
     }
 
 }
 
 // Essa função confere se a sala está livre naquele dia e horário
-bool ReservationSystem::isAvailable(int room_index, std::string weekday, int start_hour, int end_hour) {
+bool ReservationSystem::isAvailable(int sala_idx, std::string weekday, int start_hour, int end_hour) {
     
     // Pega a primeira reserva da sala que queremos testar
-    ReservaNode* atual = this->room_schedules[room_index];
+    ReservaNode* atual = this->reservas[sala_idx];
 
     // Olhamos todas as reservas da sala, uma por uma, para ver se alguma bate com o horário que queremos
     while (atual != nullptr) {
@@ -52,8 +52,8 @@ int ReservationSystem::valorDoDia(std::string dia) {
 }
 
 bool ReservationSystem::reserve(ReservationRequest request){
-    for (int i = 0; i < room_count; i++){
-        if (request.getStudentCount() <= room_capacities[i]){
+    for (int i = 0; i < qtd_salas; i++){
+        if (request.getStudentCount() <= capacidade_salas[i]){
             if (isAvailable(i, request.getWeekday(), request.getStartHour(), request.getEndHour())){
                 // Criar uma possivel nova reserva
                 ReservaNode* nova_reserva = new ReservaNode{request, nullptr};
@@ -61,7 +61,7 @@ bool ReservationSystem::reserve(ReservationRequest request){
                 int dia_novo = valorDoDia(request.getWeekday());
                 int hora_nova = request.getStartHour();
 
-                ReservaNode* atual = this->room_schedules[i];
+                ReservaNode* atual = this->reservas[i];
                 ReservaNode* anterior = nullptr;
 
                 while (atual != nullptr) {
@@ -81,8 +81,8 @@ bool ReservationSystem::reserve(ReservationRequest request){
 
         //caso 1: A reserva entra no comeco
         if (anterior == nullptr) {
-            nova_reserva->proximo = this->room_schedules[i];
-            this->room_schedules[i] = nova_reserva;
+            nova_reserva->proximo = this->reservas[i];
+            this->reservas[i] = nova_reserva;
         } 
         // caso 2: A reserva entra no meio ou no fim
         else {
@@ -99,8 +99,8 @@ bool ReservationSystem::reserve(ReservationRequest request){
 }
 
 bool ReservationSystem::cancel(std::string course_name){
-    for (int i = 0; i < room_count; i++){
-        ReservaNode* atual = room_schedules[i];
+    for (int i = 0; i < qtd_salas; i++){
+        ReservaNode* atual = reservas[i];
         ReservaNode* anterior = nullptr;
 
         while(atual != nullptr){
@@ -108,7 +108,7 @@ bool ReservationSystem::cancel(std::string course_name){
                 // Encontramos a reserva a ser cancelada
                 if (anterior == nullptr) {
                     // A reserva a ser cancelada é a primeira da lista
-                    room_schedules[i] = atual->proximo;
+                    reservas[i] = atual->proximo;
                 } else {
                     // A reserva a ser cancelada está no meio ou no final da lista
                     anterior->proximo = atual->proximo;
@@ -125,10 +125,10 @@ bool ReservationSystem::cancel(std::string course_name){
 }
 
 void ReservationSystem::printSchedule(){
-    for (int i = 0; i < room_count; i++){
+    for (int i = 0; i < qtd_salas; i++){
         std::cout << "Sala " << i << std::endl;
         int contador = 0;
-        ReservaNode* atual = this->room_schedules[0]; 
+        ReservaNode* atual = this->reservas[0]; 
 
     // percorremos de reserva em reserva
         while (atual != nullptr) {
@@ -138,7 +138,7 @@ void ReservationSystem::printSchedule(){
             
     }
 
-}
+} 
 
 
 
