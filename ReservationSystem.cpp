@@ -43,12 +43,13 @@ bool ReservationSystem::isAvailable(int sala_idx, std::string weekday, int start
 }
 
 // Função auxiliar para ajudar na ordenação
-int ReservationSystem::valorDoDia(std::string dia) {
+int ReservationSystem::Dia_to_Num(std::string dia) {
     if (dia == "segunda") return 1;
     else if (dia == "terca")   return 2;
     else if (dia == "quarta")  return 3;
     else if (dia == "quinta")  return 4;
     else if (dia == "sexta")   return 5;
+    return 0; // dia inválido
 }
 
 bool ReservationSystem::reserve(ReservationRequest request){
@@ -58,14 +59,14 @@ bool ReservationSystem::reserve(ReservationRequest request){
                 // Criar uma possivel nova reserva
                 ReservaNode* nova_reserva = new ReservaNode{request, nullptr};
                 
-                int dia_novo = valorDoDia(request.getWeekday());
+                int dia_novo = Dia_to_Num(request.getWeekday());
                 int hora_nova = request.getStartHour();
 
                 ReservaNode* atual = this->reservas[i];
                 ReservaNode* anterior = nullptr;
 
                 while (atual != nullptr) {
-                    int dia_atual = valorDoDia(atual->reserva.getWeekday());
+                    int dia_atual = Dia_to_Num(atual->reserva.getWeekday());
                     int hora_atual = atual->reserva.getStartHour();
 
                     // A regra de ordenação:
@@ -119,23 +120,39 @@ bool ReservationSystem::cancel(std::string course_name){
             anterior = atual;
             atual = atual->proximo; // Pula para a próxima reserva
         }
-    return false; // Não foi possível encontrar a reserva para cancelar
     }
-
+    return false; // Não foi possível encontrar a reserva para cancelar
 }
 
 void ReservationSystem::printSchedule(){
+    // percorremos de sala em sala
     for (int i = 0; i < qtd_salas; i++){
         std::cout << "Sala " << i << std::endl;
-        int contador = 0;
-        ReservaNode* atual = this->reservas[0]; 
 
-    // percorremos de reserva em reserva
-        while (atual != nullptr) {
-            contador++;
-            atual = atual->proximo; // vai para a proxima reserva
+        ReservaNode* atual = this->reservas[i]; 
+        if (atual != nullptr){
+            std::cout << atual->reserva.getWeekday() << ":" << std::endl;
         }
+        // percorremos de reserva em reserva
+        while (atual != nullptr) {
+
+            std::cout << atual->reserva.getStartHour() << "h~" 
+            << atual->reserva.getEndHour() << "h:" 
+            << atual->reserva.getCourseName() << std::endl; 
             
+            std::string dia_atual = atual->reserva.getWeekday();
+            if (atual->proximo != nullptr){
+                std::string dia_proximo = atual->proximo->reserva.getWeekday(); 
+                if (dia_atual != dia_proximo) {
+                    std::cout << dia_proximo << ":" << std::endl;
+            }
+            }
+            
+           
+            atual = atual->proximo; // vai para a proxima reserva
+
+        }
+        std::cout << std::endl;
     }
 
 } 
