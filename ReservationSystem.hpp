@@ -29,7 +29,6 @@ public:
     bool isAvailable(int room_index, std::string weekday, int start_hour, int end_hour);
     int Dia_to_Num(std::string dia);
 
-
     void printSchedule();
 
     // Outros métodos utilitários necessários
