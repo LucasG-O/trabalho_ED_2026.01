@@ -45,11 +45,11 @@ bool ReservationSystem::isAvailable(int room_index, std::string weekday, int sta
 // Função auxiliar para ajudar na ordenação
 int ReservationSystem::valorDoDia(std::string dia) {
     if (dia == "segunda") return 1;
-    if (dia == "terca")   return 2;
-    if (dia == "quarta")  return 3;
-    if (dia == "quinta")  return 4;
-    if (dia == "sexta")   return 5;
-    return 6;
+    else if (dia == "terca")   return 2;
+    else if (dia == "quarta")  return 3;
+    else if (dia == "quinta")  return 4;
+    else if (dia == "sexta")   return 5;
+    else // RAISE ALGUMA COISA QUE EU N SEI FAZER EM C++ 
 }
 
 bool ReservationSystem::reserve(ReservationRequest request){
@@ -68,7 +68,7 @@ bool ReservationSystem::reserve(ReservationRequest request){
                 while (atual != nullptr) {
                     int dia_atual = valorDoDia(atual->requisicao.getWeekday());
                     int hora_atual = atual->requisicao.getStartHour();
-
+  
                     // A regra de ordenação:
                     // Se o dia do novo for menor, OU (se for no mesmo dia E a hora for menor)...
                     if (dia_novo < dia_atual || (dia_novo == dia_atual && hora_nova < hora_atual)) {
