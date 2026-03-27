@@ -7,9 +7,9 @@ ReservationSystem::ReservationSystem(int qtd_salas, int* capacidade_salas) {
     for (int i = 0; i < qtd_salas; i++) {
         this->capacidade_salas[i] = capacidade_salas[i];
     }
-    this->reservas = new ReservaNode*[qtd_salas];
+    this->reservas_salas = new ReservaNode*[qtd_salas];
     for (int i = 0; i < qtd_salas; i++) {
-        this->reservas[i] = nullptr; 
+        this->reservas_salas[i] = nullptr; 
     }
 
 }
@@ -18,7 +18,7 @@ ReservationSystem::ReservationSystem(int qtd_salas, int* capacidade_salas) {
 bool ReservationSystem::isAvailable(int sala_idx, std::string weekday, int start_hour, int end_hour) {
     
     // Pega a primeira reserva da sala que queremos testar
-    ReservaNode* atual = this->reservas[sala_idx];
+    ReservaNode* atual = this->reservas_salas[sala_idx];
 
     // Olhamos todas as reservas da sala, uma por uma, para ver se alguma bate com o horário que queremos
     while (atual != nullptr) {
@@ -62,7 +62,7 @@ bool ReservationSystem::reserve(ReservationRequest request){
                 int dia_novo = Dia_to_Num(request.getWeekday());
                 int hora_nova = request.getStartHour();
 
-                ReservaNode* atual = this->reservas[i];
+                ReservaNode* atual = this->reservas_salas[i];
                 ReservaNode* anterior = nullptr;
 
                 while (atual != nullptr) {
@@ -82,8 +82,8 @@ bool ReservationSystem::reserve(ReservationRequest request){
 
         //caso 1: A reserva entra no comeco
         if (anterior == nullptr) {
-            nova_reserva->proximo = this->reservas[i];
-            this->reservas[i] = nova_reserva;
+            nova_reserva->proximo = this->reservas_salas[i];
+            this->reservas_salas[i] = nova_reserva;
         } 
         // caso 2: A reserva entra no meio ou no fim
         else {
@@ -101,7 +101,7 @@ bool ReservationSystem::reserve(ReservationRequest request){
 
 bool ReservationSystem::cancel(std::string course_name){
     for (int i = 0; i < qtd_salas; i++){
-        ReservaNode* atual = reservas[i];
+        ReservaNode* atual = reservas_salas[i];
         ReservaNode* anterior = nullptr;
 
         while(atual != nullptr){
@@ -109,7 +109,7 @@ bool ReservationSystem::cancel(std::string course_name){
                 // Encontramos a reserva a ser cancelada
                 if (anterior == nullptr) {
                     // A reserva a ser cancelada é a primeira da lista
-                    reservas[i] = atual->proximo;
+                    reservas_salas[i] = atual->proximo;
                 } else {
                     // A reserva a ser cancelada está no meio ou no final da lista
                     anterior->proximo = atual->proximo;
@@ -129,7 +129,7 @@ void ReservationSystem::printSchedule(){
     for (int i = 0; i < qtd_salas; i++){
         std::cout << "Sala " << i << std::endl;
 
-        ReservaNode* atual = this->reservas[i]; 
+        ReservaNode* atual = this->reservas_salas[i]; 
         if (atual != nullptr){
             std::cout << atual->reserva.getWeekday() << ":" << std::endl;
         }
@@ -155,7 +155,4 @@ void ReservationSystem::printSchedule(){
         std::cout << std::endl;
     }
 
-} 
-
-
-
+}
