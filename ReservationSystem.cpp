@@ -19,15 +19,15 @@ bool ReservationSystem::isAvailable(int room_index, std::string weekday, int sta
     
     // Pega a primeira reserva da sala que queremos testar
     ReservaNode* atual = this->room_schedules[room_index];
-    
+
     // Olhamos todas as reservas da sala, uma por uma, para ver se alguma bate com o horário que queremos
     while (atual != nullptr) {
         
         // Só importa se for no mesmo dia da semana
-        if (atual->requisicao.getWeekday() == weekday) {
+        if (atual->reserva.getWeekday() == weekday) {
             
-            int inicio_existente = atual->requisicao.getStartHour();
-            int fim_existente = atual->requisicao.getEndHour();
+            int inicio_existente = atual->reserva.getStartHour();
+            int fim_existente = atual->reserva.getEndHour();
             
             // Confere se o horário que queremos reservar bate com o horário da reserva atual.
             if (start_hour < fim_existente && end_hour > inicio_existente) {
@@ -49,7 +49,6 @@ int ReservationSystem::valorDoDia(std::string dia) {
     else if (dia == "quarta")  return 3;
     else if (dia == "quinta")  return 4;
     else if (dia == "sexta")   return 5;
-    else // RAISE ALGUMA COISA QUE EU N SEI FAZER EM C++ 
 }
 
 bool ReservationSystem::reserve(ReservationRequest request){
@@ -66,9 +65,9 @@ bool ReservationSystem::reserve(ReservationRequest request){
                 ReservaNode* anterior = nullptr;
 
                 while (atual != nullptr) {
-                    int dia_atual = valorDoDia(atual->requisicao.getWeekday());
-                    int hora_atual = atual->requisicao.getStartHour();
-  
+                    int dia_atual = valorDoDia(atual->reserva.getWeekday());
+                    int hora_atual = atual->reserva.getStartHour();
+
                     // A regra de ordenação:
                     // Se o dia do novo for menor, OU (se for no mesmo dia E a hora for menor)...
                     if (dia_novo < dia_atual || (dia_novo == dia_atual && hora_nova < hora_atual)) {
@@ -85,7 +84,7 @@ bool ReservationSystem::reserve(ReservationRequest request){
             nova_reserva->proximo = this->room_schedules[i];
             this->room_schedules[i] = nova_reserva;
         } 
-        // caso 2: A reserva entra no meio ou lá no final
+        // caso 2: A reserva entra no meio ou no fim
         else {
             nova_reserva->proximo = atual;
             anterior->proximo = nova_reserva;
@@ -105,7 +104,7 @@ bool ReservationSystem::cancel(std::string course_name){
         ReservaNode* anterior = nullptr;
 
         while(atual != nullptr){
-            if (atual->requisicao.getCourseName() == course_name){
+            if (atual->reserva.getCourseName() == course_name){
                 // Encontramos a reserva a ser cancelada
                 if (anterior == nullptr) {
                     // A reserva a ser cancelada é a primeira da lista
