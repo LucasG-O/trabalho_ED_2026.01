@@ -22,7 +22,6 @@ private:
 public:
 
     ReservationSystem(int qtd_salas, int* capacidade_salas);
-    ~ReservationSystem();
 
     bool reserve(ReservationRequest request);
     bool cancel(std::string course_name);

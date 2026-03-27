@@ -14,6 +14,7 @@ ReservationSystem::ReservationSystem(int qtd_salas, int* capacidade_salas) {
 
 }
 
+
 // Essa função confere se a sala está livre naquele dia e horário
 bool ReservationSystem::isAvailable(int sala_idx, std::string weekday, int start_hour, int end_hour) {
     
