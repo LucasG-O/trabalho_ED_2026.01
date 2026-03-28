@@ -155,5 +155,4 @@ void ReservationSystem::printSchedule(){
         }
         std::cout << std::endl;
     }
-
 }
