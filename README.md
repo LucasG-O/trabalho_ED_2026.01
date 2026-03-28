@@ -1,7 +1,7 @@
 # Room Reservation System
 
 ## 1. Descrição do Projeto
-Este projeto é um sistema em C++ desenvolvido para gerenciar a alocação de disciplinas em salas de aula durante os dias úteis da semana (segunda a sexta-feira). O sistema é capaz de processar solicitações de reserva, garantindo que não haja conflito de horários (sobreposições) e alocando automaticamente a primeira sala disponível que possua capacidade suficiente para o número de alunos da turma. O sistema também permite o cancelamento de reservas e a exibição ordenada da grade horária de todas as salas.
+Este projeto é um sistema em C++ desenvolvido para gerenciar a alocação de disciplinas em salas de aula durante os dias úteis da semana. O sistema é capaz de processar solicitações de reserva, garantindo que não haja conflito de horários e alocando automaticamente a primeira sala disponível que possua capacidade suficiente para o número de alunos da turma. O sistema também permite o cancelamento de reservas e a exibição ordenada da grade horária de todas as salas.
 
 ## 2. Instruções de Compilação
 O projeto não utiliza bibliotecas externas e deve ser compilado utilizando o `g++`. Para compilar o código fonte e gerar o executável, abra o terminal na pasta raiz do projeto e execute o seguinte comando:
@@ -13,7 +13,7 @@ g++ main.cpp ReservationSystem.cpp ReservationRequest.cpp -o reservation_system
 ## 3. Instruções de Execução
 Após a compilação bem-sucedida, um arquivo executável será gerado na mesma pasta. Para iniciar o programa com os casos de teste definidos no arquivo principal, utilize o comando correspondente ao seu sistema operacional:
 
-* **No Windows (PowerShell/CMD):**
+* **No Windows:**
   ```bash
   .\reservation_system.exe
   ```
