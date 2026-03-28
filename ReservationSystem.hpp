@@ -1,4 +1,4 @@
-#ifndef RESERVATIONSYSTEM_HPP // Boa prática para evitar erro de compilação
+#ifndef RESERVATIONSYSTEM_HPP
 #define RESERVATIONSYSTEM_HPP
 
 #include <string>
