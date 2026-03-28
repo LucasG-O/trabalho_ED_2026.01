@@ -14,12 +14,12 @@ ReservationSystem::ReservationSystem(int qtd_salas, int* capacidade_salas) {
 
 }
 
-
 // Essa função confere se a sala está livre naquele dia e horário
 bool ReservationSystem::isAvailable(int sala_idx, std::string weekday, int start_hour, int end_hour) {
     
     // Pega a primeira reserva da sala que queremos testar
     ReservaNode* atual = this->reservas_salas[sala_idx];
+
 
     // Olhamos todas as reservas da sala, uma por uma, para ver se alguma bate com o horário que queremos
     while (atual != nullptr) {
@@ -31,9 +31,7 @@ bool ReservationSystem::isAvailable(int sala_idx, std::string weekday, int start
             int fim_existente = atual->reserva.getEndHour();
             
             // Confere se o horário que queremos reservar bate com o horário da reserva atual.
-            if (start_hour < fim_existente && end_hour > inicio_existente) {
-                return false;
-            }
+
         }
         
         atual = atual->proximo; // Pula para a proxima reserva
@@ -54,6 +52,10 @@ int ReservationSystem::Dia_to_Num(std::string dia) {
 }
 
 bool ReservationSystem::reserve(ReservationRequest request){
+    if (request.getStartHour() >= request.getEndHour()) {
+        std::cout << " Reserva do curso " << request.getCourseName() << " nao foi possivel por apresentar horario invalido" << std::endl;
+        return false; // Horário inválido
+    }
     for (int i = 0; i < qtd_salas; i++){
         if (request.getStudentCount() <= capacidade_salas[i]){
             if (isAvailable(i, request.getWeekday(), request.getStartHour(), request.getEndHour())){
@@ -96,6 +98,11 @@ bool ReservationSystem::reserve(ReservationRequest request){
             }
         }
     }
+    
+        std::cout << " Reserva do curso " << request.getCourseName() 
+                    << " nao foi possivel pois nao foi encontrada sala com capacidade suficiente" 
+                    << std::endl;
+
     return false; // Não foi possível fazer a reserva
 
 }
@@ -128,24 +135,27 @@ bool ReservationSystem::cancel(std::string course_name){
 void ReservationSystem::printSchedule(){
     // percorremos de sala em sala
     for (int i = 0; i < qtd_salas; i++){
-        std::cout << "Sala " << i << std::endl;
+        std::cout << "Sala " << i << "\n" <<std::endl;
 
         ReservaNode* atual = this->reservas_salas[i]; 
         if (atual != nullptr){
-            std::cout << atual->reserva.getWeekday() << ":" << std::endl;
+            std::cout << atual->reserva.getWeekday() << ": " << std::endl;
         }
         // percorremos de reserva em reserva
         while (atual != nullptr) {
 
-            std::cout << atual->reserva.getStartHour() << "h~" 
-            << atual->reserva.getEndHour() << "h:" 
+            std::cout <<"    " << atual->reserva.getStartHour() << "h~" 
+            << atual->reserva.getEndHour() << "h: " 
             << atual->reserva.getCourseName() << std::endl; 
             
-            std::string dia_atual = atual->reserva.getWeekday();
+
             if (atual->proximo != nullptr){
+                std::string dia_atual = atual->reserva.getWeekday();
                 std::string dia_proximo = atual->proximo->reserva.getWeekday(); 
                 if (dia_atual != dia_proximo) {
-                    std::cout << dia_proximo << ":" << std::endl;
+                    std::cout << std::endl;
+                    std::cout << dia_proximo << ": " << std::endl;
+        
             }
             }
             
